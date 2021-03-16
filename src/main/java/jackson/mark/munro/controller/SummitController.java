@@ -22,6 +22,6 @@ public class SummitController {
 
     @GetMapping()
     public Collection<Summit> listAll() {
-        return summitService.listAll();
+        return summitService.getAll();
     }
 }

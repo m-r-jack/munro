@@ -41,7 +41,7 @@ class SummitControllerTest {
 
     @Test
     void listAll_shouldReturnAllSummits() {
-        when(summitService.listAll()).thenReturn(ALL_SUMMITS);
+        when(summitService.getAll()).thenReturn(ALL_SUMMITS);
 
         Collection<Summit> result = summitController.listAll();
 
