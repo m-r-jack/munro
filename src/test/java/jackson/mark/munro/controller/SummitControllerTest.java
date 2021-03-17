@@ -40,10 +40,10 @@ class SummitControllerTest {
     private SummitController summitController;
 
     @Test
-    void listAll_shouldReturnAllSummits() {
-        when(summitService.getAll()).thenReturn(ALL_SUMMITS);
+    void find_shouldReturnAllSummitsFromService_whenAllFiltersAreNull() {
+        when(summitService.find(null, null, null)).thenReturn(ALL_SUMMITS);
 
-        Collection<Summit> result = summitController.listAll();
+        Collection<Summit> result = summitController.find(null, null, null);
 
         assertThat("Did not return all summits.", result, is(ALL_SUMMITS));
     }

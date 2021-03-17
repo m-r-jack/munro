@@ -50,10 +50,10 @@ class SummitServiceImplTest {
     private SummitServiceImpl summitService;
 
     @Test
-    void listAll_shouldReturnAllSummits() {
+    void find_shouldReturnAllSummits_whenAllFilterParamsAreNull() {
         when(summitStore.getAll()).thenReturn(ALL_SUMMITS);
 
-        Collection<Summit> result = summitService.getAll();
+        Collection<Summit> result = summitService.find(null, null, null);
 
         assertThat("Did not return all summits.", result, containsInAnyOrder(ALL_SUMMITS.toArray()));
     }

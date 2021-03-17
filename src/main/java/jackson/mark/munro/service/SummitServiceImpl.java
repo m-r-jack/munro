@@ -24,14 +24,6 @@ public class SummitServiceImpl implements SummitService {
     }
 
     @Override
-    public Collection<Summit> getAll() {
-        log.debug("Getting all summits.");
-        Collection<Summit> summits = summitStore.getAll();
-        log.debug("Found {}", summits);
-        return summits;
-    }
-
-    @Override
     public Collection<Summit> find(SummitCategory category, Integer minHeightInMetres, Integer maxHeightInMetres) {
        log.debug("Finding summits with category [{}], minHeightInMetres [{}] and maxHeightInMetres [{}]", category,
                 minHeightInMetres, maxHeightInMetres);
