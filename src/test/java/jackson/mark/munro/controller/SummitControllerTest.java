@@ -1,5 +1,6 @@
 package jackson.mark.munro.controller;
 
+import jackson.mark.munro.exception.ValidationException;
 import jackson.mark.munro.model.Summit;
 import jackson.mark.munro.model.SummitCategory;
 import jackson.mark.munro.service.SummitService;
@@ -8,6 +9,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +18,8 @@ import java.util.List;
 import static jackson.mark.munro.model.SummitCategory.MUNRO;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -34,8 +39,13 @@ class SummitControllerTest {
 
     private static final List<Summit> SUMMITS = List.of(MUNRO_1, MUNRO_TOP_1);
 
+    private static final ValidationException VALIDATION_EXCEPTION =
+            new ValidationException(HttpStatus.UNPROCESSABLE_ENTITY, "An error message");
+
     @Mock
     private SummitService summitService;
+    @Mock
+    private QueryParamValidator paramValidator;
 
     @InjectMocks
     private SummitController summitController;
@@ -56,5 +66,15 @@ class SummitControllerTest {
         Collection<Summit> result = summitController.find(7,MUNRO, 1000, 1400);
 
         assertThat("Did not return all summits.", result, is(SUMMITS));
+    }
+
+    @Test
+    void find_shouldThrowResponseStatusException_whenQueryParamValidatorThrowsException() {
+        doThrow(VALIDATION_EXCEPTION).when(paramValidator).validate(7, MUNRO, 1000, 1400);
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> summitController.find(7, MUNRO, 1000, 1400));
+
+        assertThat(exception.getStatus(), is(VALIDATION_EXCEPTION.getHttpStatus()));
+        assertThat(exception.getReason(), is(VALIDATION_EXCEPTION.getMessage()));
     }
 }
