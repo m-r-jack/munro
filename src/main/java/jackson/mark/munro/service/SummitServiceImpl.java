@@ -24,13 +24,18 @@ public class SummitServiceImpl implements SummitService {
     }
 
     @Override
-    public Collection<Summit> find(SummitCategory category, Integer minHeightInMetres, Integer maxHeightInMetres) {
-       log.debug("Finding summits with category [{}], minHeightInMetres [{}] and maxHeightInMetres [{}]", category,
-                minHeightInMetres, maxHeightInMetres);
+    public Collection<Summit> find(int limit, SummitCategory category, Integer minHeightInMetres,
+                                   Integer maxHeightInMetres) {
+       log.debug("Finding summits with limit [{}], category [{}], minHeightInMetres [{}] and maxHeightInMetres [{}]",
+               limit, category, minHeightInMetres, maxHeightInMetres);
+       if (limit == 0) {
+           limit = Integer.MAX_VALUE;
+       }
         Collection<Summit> summits = summitStore.getAll().stream()
                 .filter(categoryPredicate(category))
                 .filter(minHeightPredicate(minHeightInMetres))
                 .filter(maxHeightPredicate(maxHeightInMetres))
+                .limit(limit)
                 .collect(Collectors.toList());
         log.debug("Found {}", summits);
         return summits;

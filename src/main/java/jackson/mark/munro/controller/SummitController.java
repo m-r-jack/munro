@@ -26,6 +26,6 @@ public class SummitController {
     public Collection<Summit> find(@RequestParam(required = false) SummitCategory category,
                                    @RequestParam(name="min-height", required = false) Integer minHeightInMetres,
                                    @RequestParam(name="max-height", required = false) Integer maxHeightInMetres) {
-            return summitService.find(category, minHeightInMetres, maxHeightInMetres);
+            return summitService.find(0, category, minHeightInMetres, maxHeightInMetres);
     }
 }

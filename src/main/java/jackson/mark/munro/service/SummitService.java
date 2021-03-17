@@ -14,6 +14,7 @@ public interface SummitService {
 
     /**
      * Returns a collection of summits filtered by category and height
+     * @param limit The number of results to be returned. No limit will be applied if the value is 0
      * @param category returned summits will only include summits with the specified category. Can be  null, in which
      *                 case no category filtering will be applied.
      * @param minHeightInMetres returned summits will only include summits greater than or equal to this height. Can
@@ -22,7 +23,7 @@ public interface SummitService {
      *                          null, in which case no minHeightInMetres filtering will be applied.
      * @return A collection of summits filtered by the given parameter values
      */
-    Collection<Summit> find(@Nullable SummitCategory category, @Nullable Integer minHeightInMetres,
+    Collection<Summit> find(int limit, @Nullable SummitCategory category, @Nullable Integer minHeightInMetres,
                             @Nullable Integer maxHeightInMetres);
 
 }

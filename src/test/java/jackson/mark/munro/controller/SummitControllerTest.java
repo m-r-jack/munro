@@ -41,7 +41,7 @@ class SummitControllerTest {
 
     @Test
     void find_shouldReturnAllSummitsFromService_whenAllFiltersAreNull() {
-        when(summitService.find(null, null, null)).thenReturn(ALL_SUMMITS);
+        when(summitService.find(0,null, null, null)).thenReturn(ALL_SUMMITS);
 
         Collection<Summit> result = summitController.find(null, null, null);
 
