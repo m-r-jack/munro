@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Component
 @Slf4j
@@ -24,21 +26,29 @@ public class SummitServiceImpl implements SummitService {
     }
 
     @Override
-    public Collection<Summit> find(int limit, SummitCategory category, Integer minHeightInMetres,
-                                   Integer maxHeightInMetres) {
-       log.debug("Finding summits with limit [{}], category [{}], minHeightInMetres [{}] and maxHeightInMetres [{}]",
+    public Collection<Summit> find(int limit, Comparator<Summit> comparator, SummitCategory category,
+                                   Integer minHeightInMetres, Integer maxHeightInMetres) {
+        log.debug("Finding summits with limit [{}], category [{}], minHeightInMetres [{}] and maxHeightInMetres [{}]",
                limit, category, minHeightInMetres, maxHeightInMetres);
-       if (limit == 0) {
-           limit = Integer.MAX_VALUE;
-       }
-        Collection<Summit> summits = summitStore.getAll().stream()
+        if (limit == 0) {
+            limit = Integer.MAX_VALUE;
+        }
+        Stream<Summit> filterdAndLimitedSummits =  getLimitedAndFilteredSummitStream(limit, category,
+                minHeightInMetres, maxHeightInMetres);
+        Collection<Summit> summits = comparator == null
+                ? filterdAndLimitedSummits.collect(Collectors.toList())
+                : filterdAndLimitedSummits.sorted(comparator).collect(Collectors.toList());
+        log.debug("Found {}", summits);
+        return summits;
+    }
+
+    private Stream<Summit> getLimitedAndFilteredSummitStream(int limit, SummitCategory category,
+                                                             Integer minHeightInMetres, Integer maxHeightInMetres) {
+        return summitStore.getAll().stream()
                 .filter(categoryPredicate(category))
                 .filter(minHeightPredicate(minHeightInMetres))
                 .filter(maxHeightPredicate(maxHeightInMetres))
-                .limit(limit)
-                .collect(Collectors.toList());
-        log.debug("Found {}", summits);
-        return summits;
+                .limit(limit);
     }
 
     private Predicate<Summit> categoryPredicate(SummitCategory category) {

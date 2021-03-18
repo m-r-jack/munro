@@ -21,7 +21,9 @@ public class MunroApiIntegrationTest {
 
         @Test
         public void findEndpoint_shouldReturnOK_whenValidRequest() throws Exception {
-                this.mockMvc.perform(get("/summits?limit=999&category=MUNRO&min-height=950&max-height=1100")).andExpect(status().isOk());
+                this.mockMvc.perform(get("/summits?limit=999&sort=+height," +
+                        "-name&category=MUNRO&min-height=950&max-height" +
+                        "=1100")).andExpect(status().isOk());
         }
 
         @Test
@@ -30,7 +32,7 @@ public class MunroApiIntegrationTest {
         }
 
         @Test
-        public void findEndpoint_shouldReturnBadRequestError_whenLimitIsNegative() throws Exception {
-                this.mockMvc.perform(get("/summits?limit=-1&category=MUNRO&min-height=950&max-height=1100")).andExpect(status().isBadRequest());
+        public void findEndpoint_shouldReturnUnprocessableEntityError_whenLimitIsNegative() throws Exception {
+                this.mockMvc.perform(get("/summits?limit=-1&category=MUNRO&min-height=950&max-height=1100")).andExpect(status().isUnprocessableEntity());
         }
 }

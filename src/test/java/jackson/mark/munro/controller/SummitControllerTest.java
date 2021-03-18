@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import static jackson.mark.munro.model.SummitCategory.MUNRO;
@@ -46,33 +47,36 @@ class SummitControllerTest {
     private SummitService summitService;
     @Mock
     private QueryParamValidator paramValidator;
+    @Mock
+    private SortParamParser sortParamParser;
 
     @InjectMocks
     private SummitController summitController;
 
     @Test
-    void find_shouldReturnSummitsFromService_whenLimitZeroAndAllFiltersAreNull() {
-        when(summitService.find(0,null, null, null)).thenReturn(SUMMITS);
+    void find_shouldReturnSummitsFromService_whenLimitZeroAndSortAndAllFiltersAreNull() {
+        when(summitService.find(0, null,null, null, null)).thenReturn(SUMMITS);
 
-        Collection<Summit> result = summitController.find(0,null, null, null);
+        Collection<Summit> result = summitController.find(0, null, null, null, null);
 
         assertThat("Did not return all summits.", result, is(SUMMITS));
     }
 
     @Test
-    void find_shouldReturnSummitsFromService_whenLimitAndFiltersAreProvided() {
-        when(summitService.find(7, MUNRO, 1000, 1400)).thenReturn(SUMMITS);
+    void find_shouldReturnSummitsFromService_whenNonZeroLimitAndValidSortAndValidFiltersAreProvided() {
+        when(summitService.find(7, null, MUNRO, 1000, 1400)).thenReturn(SUMMITS);
 
-        Collection<Summit> result = summitController.find(7,MUNRO, 1000, 1400);
+        Collection<Summit> result = summitController.find(7,"+height", MUNRO, 1000, 1400);
 
         assertThat("Did not return all summits.", result, is(SUMMITS));
     }
 
     @Test
     void find_shouldThrowResponseStatusException_whenQueryParamValidatorThrowsException() {
-        doThrow(VALIDATION_EXCEPTION).when(paramValidator).validate(7, MUNRO, 1000, 1400);
+        doThrow(VALIDATION_EXCEPTION).when(paramValidator).validate(7, "+height", MUNRO, 1000, 1400);
 
-        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> summitController.find(7, MUNRO, 1000, 1400));
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> summitController.find(7
+                , "+height", MUNRO, 1000, 1400));
 
         assertThat(exception.getStatus(), is(VALIDATION_EXCEPTION.getHttpStatus()));
         assertThat(exception.getReason(), is(VALIDATION_EXCEPTION.getMessage()));
