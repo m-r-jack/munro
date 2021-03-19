@@ -3,7 +3,7 @@ package jackson.mark.munro.data.mapper;
 import jackson.mark.munro.model.Summit;
 
 /**
-* Creates a Summit from an array of Strings
+ * Creates a Summit from an array of Strings
  */
 public interface SummitDataMapper {
     /**
