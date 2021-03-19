@@ -38,7 +38,8 @@ public class QueryParamValidator {
                 || containsMutuallyExclusiveSorts(sort))
         ) {
             throw new ValidationException(HttpStatus.UNPROCESSABLE_ENTITY,
-                    String.format("%s is not a valid sort param. sort must contain a comma-separated list of any of %s",
+                    String.format("%s is not a valid sort param. sort must contain a comma-separated list of any of " +
+                                    "%s, but must not specify the same field both ascending and descending.",
                                     sort,
                             SortParamParser.COMPARATORS_BY_SORT_PARAM.keySet().stream().map(Object::toString)
                             .collect(Collectors.joining(", "))));
