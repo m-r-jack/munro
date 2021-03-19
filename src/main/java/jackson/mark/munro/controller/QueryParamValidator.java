@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static jackson.mark.munro.controller.SummitController.EITHER_CATEGORY;
@@ -33,13 +34,21 @@ public class QueryParamValidator {
 
     private void validateSort(String sort) {
         if (sort != null && (sort.isEmpty() ||
-                !Arrays.stream(sort.split(",")).allMatch(SortParamParser.COMPARATORS_BY_SORT_PARAM::containsKey))) {
+                !Arrays.stream(sort.split(",")).allMatch(SortParamParser.COMPARATORS_BY_SORT_PARAM::containsKey)
+                || containsMutuallyExclusiveSorts(sort))
+        ) {
             throw new ValidationException(HttpStatus.UNPROCESSABLE_ENTITY,
                     String.format("%s is not a valid sort param. sort must contain a comma-separated list of any of %s",
                                     sort,
                             SortParamParser.COMPARATORS_BY_SORT_PARAM.keySet().stream().map(Object::toString)
                             .collect(Collectors.joining(", "))));
         }
+    }
+
+    private boolean containsMutuallyExclusiveSorts(String sort) {
+        List<String> sortSpecifiers = Arrays.stream(sort.split(",")).collect(Collectors.toList());
+        return (sortSpecifiers.contains(SortParamParser.HEIGHT_DESC) && sortSpecifiers.contains(SortParamParser.HEIGHT_ASC)
+        || (sortSpecifiers.contains(SortParamParser.NAME_DESC) && sortSpecifiers.contains(SortParamParser.NAME_ASC)));
     }
 
     private void validateCategory(String category) {

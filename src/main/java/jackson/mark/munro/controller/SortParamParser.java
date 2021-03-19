@@ -22,12 +22,16 @@ import java.util.Map;
 @Component
 @Slf4j
 public class SortParamParser {
+    protected static final String HEIGHT_DESC ="height_desc";
+    protected static final String HEIGHT_ASC ="height_asc";
+    protected static final String NAME_DESC ="name_desc";
+    protected static final String NAME_ASC ="name_asc";
 
     protected static final Map<String, Comparator<Summit>> COMPARATORS_BY_SORT_PARAM = Map.of(
-            "height_desc", Comparator.comparing(Summit::getHeightInMetres).reversed(),
-            "height_asc", Comparator.comparing(Summit::getHeightInMetres),
-            "name_desc", Comparator.comparing(Summit::getName).reversed(),
-            "name_asc", Comparator.comparing(Summit::getName)
+            HEIGHT_DESC, Comparator.comparing(Summit::getHeightInMetres).reversed(),
+            HEIGHT_ASC, Comparator.comparing(Summit::getHeightInMetres),
+            NAME_DESC, Comparator.comparing(Summit::getName).reversed(),
+            NAME_ASC, Comparator.comparing(Summit::getName)
     );
 
     /**

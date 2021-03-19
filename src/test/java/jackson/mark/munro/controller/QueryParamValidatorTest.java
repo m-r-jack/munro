@@ -69,6 +69,22 @@ class QueryParamValidatorTest {
     }
 
     @Test
+    void shouldThrowException_whenAttemptToSortByBothHeightAscAndHeightDesc_AndOtherParametersAreValid() {
+        ValidationException exception = assertThrows(ValidationException.class, () -> validator.validate(7,
+                "height_asc,height_desc", MUNRO.toString(), 10.0, 20.0));
+
+        assertThat(exception.getHttpStatus(), is(HttpStatus.UNPROCESSABLE_ENTITY));
+    }
+
+    @Test
+    void shouldThrowException_whenAttemptToSortByBothNameAscAndNameDesc_AndOtherParametersAreValid() {
+        ValidationException exception = assertThrows(ValidationException.class, () -> validator.validate(7,
+                "name_asc,name_desc", MUNRO.toString(), 10.0, 20.0));
+
+        assertThat(exception.getHttpStatus(), is(HttpStatus.UNPROCESSABLE_ENTITY));
+    }
+
+    @Test
     void shouldThrowException_whenCategoryContainsAnInvalidValue_AndOtherParametersAreValid() {
         ValidationException exception = assertThrows(ValidationException.class, () -> validator.validate(7,
                 "name_asc", "invalid_category", 10.0, 20.0));
