@@ -13,7 +13,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.List;
 
 import static jackson.mark.munro.model.SummitCategory.MUNRO;
@@ -27,13 +26,13 @@ import static org.mockito.Mockito.when;
 class SummitControllerTest {
 
     private static final Summit MUNRO_1 = Summit.builder()
-            .name("Ben Mark").heightInMetres(4000)
+            .name("Ben Mark").heightInMetres(1100)
             .summitCategory(MUNRO)
             .gridReference("NN773308")
             .build();
 
     private static final Summit MUNRO_TOP_1 = Summit.builder()
-            .name("Little Mark").heightInMetres(3500)
+            .name("Little Mark").heightInMetres(975.25)
             .summitCategory(SummitCategory.MUNRO_TOP)
             .gridReference("NN119965")
             .build();
@@ -64,21 +63,30 @@ class SummitControllerTest {
 
     @Test
     void find_shouldReturnSummitsFromService_whenNonZeroLimitAndValidSortAndValidFiltersAreProvided() {
-        when(summitService.find(7, null, MUNRO, 1000, 1400)).thenReturn(SUMMITS);
+        when(summitService.find(7, null, MUNRO, 950.51, 1400.0)).thenReturn(SUMMITS);
 
-        Collection<Summit> result = summitController.find(7,"+height", MUNRO, 1000, 1400);
+        Collection<Summit> result = summitController.find(7,"+height", MUNRO.toString(), 950.51, 1400.0);
 
         assertThat("Did not return all summits.", result, is(SUMMITS));
     }
 
     @Test
     void find_shouldThrowResponseStatusException_whenQueryParamValidatorThrowsException() {
-        doThrow(VALIDATION_EXCEPTION).when(paramValidator).validate(7, "+height", MUNRO, 1000, 1400);
+        doThrow(VALIDATION_EXCEPTION).when(paramValidator).validate(7, "+height", MUNRO.toString(), 950.51, 1400.0);
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> summitController.find(7
-                , "+height", MUNRO, 1000, 1400));
+                , "+height", MUNRO.toString(), 950.51, 1400.0));
 
         assertThat(exception.getStatus(), is(VALIDATION_EXCEPTION.getHttpStatus()));
         assertThat(exception.getReason(), is(VALIDATION_EXCEPTION.getMessage()));
+    }
+
+    @Test
+    void find_shouldReturnSummitsFromService_whenEITHERcategoryAndNonZeroLimitAndValidSortAndValidFiltersAreProvided() {
+        when(summitService.find(7, null, null, 950.51, 1400.0)).thenReturn(SUMMITS);
+
+        Collection<Summit> result = summitController.find(7,"+height", "EITHER", 950.51, 1400.0);
+
+        assertThat("Did not return all summits.", result, is(SUMMITS));
     }
 }

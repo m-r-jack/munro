@@ -34,12 +34,12 @@ public class SummitCsvRowDataMapper implements SummitDataMapper {
         return nameField;
     }
 
-    private int getHeight(String heightField) {
+    private double getHeight(String heightField) {
         try {
-            return Integer.parseInt(heightField);
+            return Double.parseDouble(heightField);
         } catch (NumberFormatException ex) {
-            throw new MappingException(String.format("Could not map height in metres field [%s] in column %d to an " +
-                            "integer",
+            throw new MappingException(String.format("could not map height in metres field [%s] in column %d to a " +
+                            "double",
                     heightField, HEIGHT_IN_METRES_FIELD_COLUMN));
         }
     }
@@ -50,7 +50,7 @@ public class SummitCsvRowDataMapper implements SummitDataMapper {
         } else if (categoryField.equals(MUNRO_TOP_CATEGORY)) {
             return MUNRO_TOP;
         } else {
-            throw new MappingException(String.format("Could not map category field [%s] in column %d to a " +
+            throw new MappingException(String.format("could not map category field [%s] in column %d to a " +
                             "SummitCategory",
                     categoryField, CATEGORY_FIELD_COLUMN));
         }

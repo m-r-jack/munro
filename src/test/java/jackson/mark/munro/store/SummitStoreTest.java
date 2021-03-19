@@ -29,10 +29,11 @@ class SummitStoreTest {
 
     private static final List<Summit> ALL_SUMMITS = List.of(MUNRO, MUNRO_TOP);
 
+    private SummitStore summitStore = new SummitStore();
 
     @Test
     void getAll_shouldReturnAllSummits() {
-        SummitStore summitStore = new SummitStore(ALL_SUMMITS);
+        summitStore.setSummits(ALL_SUMMITS);
 
         Collection<Summit> result = summitStore.getAll();
 

@@ -77,7 +77,7 @@ class SummitCsvRowDataMapperTest {
         Summit summit = mapper.map(MUNRO_SUMMIT_FIELDS);
 
         assertThat(summit.getName(), is("Ben Chonzie"));
-        assertThat(summit.getHeightInMetres(), is(931));
+        assertThat(summit.getHeightInMetres(), is(931.0));
         assertThat(summit.getSummitCategory(), is(MUNRO));
         assertThat(summit.getGridReference(), is("NN773308"));
     }
@@ -87,7 +87,7 @@ class SummitCsvRowDataMapperTest {
         Summit summit = mapper.map(MUNRO_TOP_SUMMIT_FIELDS);
 
         assertThat(summit.getName(), is("Chonzie Top"));
-        assertThat(summit.getHeightInMetres(), is(927));
+        assertThat(summit.getHeightInMetres(), is(927.0));
         assertThat(summit.getSummitCategory(), is(MUNRO_TOP));
         assertThat(summit.getGridReference(), is("NN773304"));
     }
@@ -98,7 +98,7 @@ class SummitCsvRowDataMapperTest {
         MappingException exception = assertThrows(MappingException.class, () ->
                 mapper.map(SUMMIT_FIELDS_WITH_INVALID_CATEGORY));
 
-        assertThat(exception.getMessage(), is("Could not map category field [INVALID CATEGORY] in column 27 to a " +
+        assertThat(exception.getMessage(), is("could not map category field [INVALID CATEGORY] in column 27 to a " +
                 "SummitCategory"));
     }
 
@@ -108,7 +108,7 @@ class SummitCsvRowDataMapperTest {
         MappingException exception = assertThrows(MappingException.class, () ->
                 mapper.map(SUMMIT_FIELDS_WITH_INVALID_HEIGHT));
 
-        assertThat(exception.getMessage(), is("Could not map height in metres field [] in column 9 to an integer"));
+        assertThat(exception.getMessage(), is("could not map height in metres field [] in column 9 to a double"));
     }
 
 }

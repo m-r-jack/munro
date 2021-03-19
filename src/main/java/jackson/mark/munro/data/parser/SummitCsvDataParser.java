@@ -36,7 +36,7 @@ public class SummitCsvDataParser implements SummitDataParser {
                 try {
                     summits.add(buildSummit(row));
                 } catch (MappingException ex) {
-                    log.warn("Could not map row {}. Skipping.", (Object) row);
+                    log.warn("Could not map row {} because {}. Skipping.", (Object) row, ex.getMessage());
                 }
             }
         } catch (FileNotFoundException e) {

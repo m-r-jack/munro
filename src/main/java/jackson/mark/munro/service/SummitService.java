@@ -26,6 +26,6 @@ public interface SummitService {
      * @return A collection of summits filtered by the given parameter values
      */
     Collection<Summit> find(int limit, @Nullable Comparator<Summit> comparator, @Nullable SummitCategory category,
-                            @Nullable Integer minHeightInMetres, @Nullable Integer maxHeightInMetres);
+                            @Nullable Double minHeightInMetres, @Nullable Double maxHeightInMetres);
 
 }

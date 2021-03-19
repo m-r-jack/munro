@@ -9,7 +9,7 @@ import lombok.EqualsAndHashCode;
 public class Summit {
     @EqualsAndHashCode.Include
     private String name;
-    private int heightInMetres;
+    private double heightInMetres;
     private SummitCategory summitCategory;
     private String gridReference;
 }

@@ -23,7 +23,7 @@ class SummitServiceImplTest {
 
     private static final int NO_LIMIT = 0;
     private static final Summit MUNRO_1 = Summit.builder()
-            .name("Ben Mark").heightInMetres(1000)
+            .name("Ben Mark").heightInMetres(1000.25)
             .summitCategory(MUNRO)
             .gridReference("NN16697127")
             .build();
@@ -72,7 +72,7 @@ class SummitServiceImplTest {
     void find_shouldFilterByMaxHeight() {
         when(summitStore.getAll()).thenReturn(ALL_SUMMITS);
 
-        Collection<Summit> result = summitService.find(NO_LIMIT, null, null, null, 1000);
+        Collection<Summit> result = summitService.find(NO_LIMIT, null, null, null, 1000.25);
 
         assertThat("Did not return all summits equal to or below max height", result, containsInAnyOrder(MUNRO_1, MUNRO_TOP_1));
     }
@@ -81,7 +81,7 @@ class SummitServiceImplTest {
     void find_shouldFilterByMinHeight() {
         when(summitStore.getAll()).thenReturn(ALL_SUMMITS);
 
-        Collection<Summit> result = summitService.find(NO_LIMIT, null, null, 1000, null);
+        Collection<Summit> result = summitService.find(NO_LIMIT, null, null, 1000.25, null);
 
         assertThat("Did not return all summits equal to or above min height.", result, containsInAnyOrder(MUNRO_1, MUNRO_2));
     }
@@ -90,16 +90,16 @@ class SummitServiceImplTest {
     void find_shouldFilterByMinHeightAndMaxHeight() {
         when(summitStore.getAll()).thenReturn(ALL_SUMMITS);
 
-        assertThat("Did not return all summits with of height 1000m.", summitService.find(NO_LIMIT,
-                null, null, 1000, 1000),
+        assertThat("Did not return all summits with of height 1000.25m.", summitService.find(NO_LIMIT,
+                null, null, 1000.25, 1000.25),
                 containsInAnyOrder(MUNRO_1));
 
         assertThat("Did not return all summits between 0 and 1100m.", summitService.find(NO_LIMIT,
-                null, null, 0, 1100),
+                null, null, 0.0, 1100.0),
                 containsInAnyOrder(MUNRO_TOP_1, MUNRO_1));
 
         assertThat("Did not return all summits between 995m and 9999m.", summitService.find(NO_LIMIT,
-                null,null, 995, 9999),
+                null,null, 995.0, 9999.0),
                 containsInAnyOrder(MUNRO_1, MUNRO_2));
 
     }
@@ -108,27 +108,27 @@ class SummitServiceImplTest {
     void find_shouldFilterByCategoryAndMinHeightAndMaxHeight() {
         when(summitStore.getAll()).thenReturn(ALL_SUMMITS);
 
-        assertThat("Did not return all munros with of height 1000m.", summitService.find(NO_LIMIT,
-                null, MUNRO, 1000, 1000),
+        assertThat("Did not return all munros with of height 1000.25m.", summitService.find(NO_LIMIT,
+                null, MUNRO, 1000.25, 1000.25),
                 containsInAnyOrder(MUNRO_1));
         assertThat("Did not return expected empty collectiion.", summitService.find(NO_LIMIT, null,
-                MUNRO_TOP, 1000, 1000),
+                MUNRO_TOP, 1000.25, 1000.25),
                 emptyCollectionOf(Summit.class));
 
-        assertThat("Did not return all munros between 0 and 1100m.", summitService.find(NO_LIMIT,
-                null, MUNRO, 0, 1100),
+        assertThat("Did not return all munros between 0 and 1100.", summitService.find(NO_LIMIT,
+                null, MUNRO, 0.0, 1100.0),
                 containsInAnyOrder(MUNRO_1));
         assertThat("Did not return all munro tops between 0 and 1100m.", summitService.find(NO_LIMIT,
-                null, MUNRO_TOP, 0,
-                1100),
+                null, MUNRO_TOP, 0.0,
+                1100.0),
                 containsInAnyOrder(MUNRO_TOP_1));
 
         assertThat("Did not return all munros between 995 and 9999m.", summitService.find(NO_LIMIT,
-                null, MUNRO, 995, 9999),
+                null, MUNRO, 995.0, 9999.0),
                 containsInAnyOrder(MUNRO_1, MUNRO_2));
         assertThat("Did not return all munro tops between 995 and 9999m.", summitService.find(NO_LIMIT,
-                null, MUNRO_TOP, 995,
-                9999),
+                null, MUNRO_TOP, 995.0,
+                9999.0),
                 emptyCollectionOf(Summit.class));
 
     }
@@ -147,7 +147,7 @@ class SummitServiceImplTest {
     void find_shouldLimitNumberOfResultsReturned_whenFiltersAreApplied_AndLimitGreaterThanZeroIsSpecified() {
         when(summitStore.getAll()).thenReturn(ALL_SUMMITS);
 
-        Collection<Summit> result = summitService.find(1, null, MUNRO, 995, 9999);
+        Collection<Summit> result = summitService.find(1, null, MUNRO, 995.0, 9999.0);
 
         assertThat("Number of results not equal to limit.", result.size(), is(1));
         assertThat("Did not return expected summits.", result, everyItem(in(ALL_MUNROS.toArray())));

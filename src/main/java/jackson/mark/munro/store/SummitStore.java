@@ -3,14 +3,15 @@ package jackson.mark.munro.store;
 import jackson.mark.munro.model.Summit;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Component
 public class SummitStore {
 
-    private List<Summit> summits;
+    private List<Summit> summits = new ArrayList<>();
 
-    public SummitStore(List<Summit> summits) {
+    public void setSummits(List<Summit> summits) {
         this.summits = summits;
     }
 

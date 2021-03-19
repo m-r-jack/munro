@@ -11,12 +11,12 @@ import java.util.Map;
  * Parses a comma-separated list of Summit fields to sort by to produce a comparator that
  * will sort a collection of summits by each specified field in order.
  * The valid sort fields in the comma-separated list are as follows:
- * +height : sort by heightInMeters ascending
- * -height : sort by heightInMeters descending
- * +name : sort by name ascending
- * -name : sort by name descending
+ * height_asc : sort by heightInMeters ascending
+ * height_desc : sort by heightInMeters descending
+ * name_asc : sort by name ascending
+ * name_desc : sort by name descending
  *
- * For example "-name,+height" specifies that Summit's should be sorted by name descending, then by height
+ * For example "name_desc,height_asc" specifies that summits should be sorted by name descending, then by height
  * ascending.
  */
 @Component
@@ -24,18 +24,17 @@ import java.util.Map;
 public class SortParamParser {
 
     protected static final Map<String, Comparator<Summit>> COMPARATORS_BY_SORT_PARAM = Map.of(
-            "-height", Comparator.comparing(Summit::getHeightInMetres).reversed(),
-            "+height", Comparator.comparing(Summit::getHeightInMetres),
-            "-name", Comparator.comparing(Summit::getName).reversed(),
-            "+name", Comparator.comparing(Summit::getName)
+            "height_desc", Comparator.comparing(Summit::getHeightInMetres).reversed(),
+            "height_asc", Comparator.comparing(Summit::getHeightInMetres),
+            "name_desc", Comparator.comparing(Summit::getName).reversed(),
+            "name_asc", Comparator.comparing(Summit::getName)
     );
 
     /**
      * returns a comparator that will sort by the fields specified in the given sort parameter
-     * @param sort a comma separated list of strings that specify the type of sort (ascending or descending) and the
-     *             field to sort by. Each string is in the format [+|-][height|name] where + represents a descending
-     *             sort, - represents a descending sort, height represents a sort by maxHeightInMetres and name
-     *             represents a sort my name.
+     * @param sort a comma separated list of strings that specify sorts. Each string is in the format
+     *             [height|name]_[asc|desc] where height represents a sort by maxHeightInMetres, name represents a
+     *             sort my name, asc represents an ascending sort and desc represents a descending sort.
      * @return a Comparator that will sort summits by the fields specified in order.
      */
     public Comparator<Summit> parseSortParam(String sort) {

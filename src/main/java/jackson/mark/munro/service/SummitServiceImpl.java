@@ -27,39 +27,37 @@ public class SummitServiceImpl implements SummitService {
 
     @Override
     public Collection<Summit> find(int limit, Comparator<Summit> comparator, SummitCategory category,
-                                   Integer minHeightInMetres, Integer maxHeightInMetres) {
+                                   Double minHeightInMetres, Double maxHeightInMetres) {
         log.debug("Finding summits with limit [{}], category [{}], minHeightInMetres [{}] and maxHeightInMetres [{}]",
                limit, category, minHeightInMetres, maxHeightInMetres);
         if (limit == 0) {
             limit = Integer.MAX_VALUE;
         }
-        Stream<Summit> filterdAndLimitedSummits =  getLimitedAndFilteredSummitStream(limit, category,
-                minHeightInMetres, maxHeightInMetres);
+        Stream<Summit> filterdSummits =  getFilteredSummitStream(category, minHeightInMetres, maxHeightInMetres);
         Collection<Summit> summits = comparator == null
-                ? filterdAndLimitedSummits.collect(Collectors.toList())
-                : filterdAndLimitedSummits.sorted(comparator).collect(Collectors.toList());
+                ? filterdSummits.limit(limit).collect(Collectors.toList())
+                : filterdSummits.sorted(comparator).limit(limit).collect(Collectors.toList());
         log.debug("Found {}", summits);
         return summits;
     }
 
-    private Stream<Summit> getLimitedAndFilteredSummitStream(int limit, SummitCategory category,
-                                                             Integer minHeightInMetres, Integer maxHeightInMetres) {
+    private Stream<Summit> getFilteredSummitStream(SummitCategory category, Double minHeightInMetres,
+                                                   Double maxHeightInMetres) {
         return summitStore.getAll().stream()
                 .filter(categoryPredicate(category))
                 .filter(minHeightPredicate(minHeightInMetres))
-                .filter(maxHeightPredicate(maxHeightInMetres))
-                .limit(limit);
+                .filter(maxHeightPredicate(maxHeightInMetres));
     }
 
     private Predicate<Summit> categoryPredicate(SummitCategory category) {
         return s -> category == null || Objects.equals(s.getSummitCategory(), category);
     }
 
-    private Predicate<Summit> minHeightPredicate(Integer minHeight) {
+    private Predicate<Summit> minHeightPredicate(Double minHeight) {
         return s -> (minHeight == null || s.getHeightInMetres() >= minHeight);
     }
 
-    private Predicate<Summit> maxHeightPredicate(Integer maxHeight) {
+    private Predicate<Summit> maxHeightPredicate(Double maxHeight) {
         return s -> (maxHeight == null || s.getHeightInMetres() <= maxHeight);
     }
 }
